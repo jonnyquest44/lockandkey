@@ -1,0 +1,430 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.main-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.left-panel {
+  flex: 1;
+  min-width: 400px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h2, .card h3 {
+  margin-top: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-size: 1rem;
+}
+
+/* Radial Wheel */
+.radial-wheel {
+  display: block;
+  margin: 1rem auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.selected-wedge {
+  filter: drop-shadow(0 0 8px rgba(0,0,0,0.3));
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Pattern Detail */
+.placeholder-text {
+  color: #9ca3af;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-row:last-of-type {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.value {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.volume-suggestion {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.volume-suggestion ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.volume-suggestion li {
+  margin: 0.5rem 0;
+  color: #78350f;
+}
+
+.json-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.json-details summary {
+  cursor: pointer;
+  color: #6366f1;
+  font-weight: 500;
+  user-select: none;
+}
+
+.json-details pre {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Today's Priorities */
+.priority-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.priority-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.priority-item:last-child {
+  border-bottom: none;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-green {
+  background-color: #22C55E;
+}
+
+.status-yellow {
+  background-color: #EAB308;
+}
+
+.status-red {
+  background-color: #EF4444;
+}
+
+.pattern-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.intensity-tag {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-family: 'Courier New', monospace;
+}
+
+/* Volume Rotation */
+.info-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rotation-item {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.rotation-item:last-child {
+  margin-bottom: 0;
+}
+
+.rotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rotation-suggestion {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin: 0.5rem 0;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .left-panel {
+    min-width: unset;
+  }
+
+  .app-header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1.25rem 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+  }
+
+  .main-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .card h2, .card h3 {
+    font-size: 1.125rem;
+  }
+
+  .radial-wheel {
+    width: 100%;
+    height: auto;
+  }
+
+  .legend {
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .legend-item {
+    font-size: 0.8rem;
+  }
+
+  .detail-row {
+    padding: 0.5rem 0;
+  }
+
+  .priority-item {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .intensity-tag {
+    font-size: 0.75rem;
+  }
+
+  .rotation-item {
+    padding: 0.75rem;
+  }
+
+  .volume-suggestion {
+    padding: 0.75rem;
+  }
+
+  .volume-suggestion ul {
+    padding-left: 1.25rem;
+  }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+  }
+
+  .main-container {
+    padding: 0.75rem;
+  }
+
+  .card {
+    padding: 0.875rem;
+    border-radius: 8px;
+  }
+
+  .card h2, .card h3 {
+    font-size: 1rem;
+  }
+
+  .legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .rotation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .json-details pre {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+}
