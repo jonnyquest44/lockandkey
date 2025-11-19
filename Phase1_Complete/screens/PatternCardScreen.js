@@ -1,0 +1,1 @@
+/* PatternCardScreen.js placeholder */

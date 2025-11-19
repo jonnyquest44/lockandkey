@@ -1,0 +1,158 @@
+[
+  {
+    "id": "H1",
+    "title": "Hip Complex Reset",
+    "region": "Hip",
+    "colorCode": "#E57373",
+    "goal": "Improve hip mobility and stability.",
+    "progression": [
+      {
+        "step": 1,
+        "title": "90/90 Hip Switch",
+        "video": "hip_9090.mp4",
+        "cues": [
+          "Keep spine tall",
+          "Control the descent"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Bridge with Reach",
+        "video": "hip_bridge_reach.mp4",
+        "cues": [
+          "Engage glutes",
+          "Reach through opposite arm"
+        ]
+      }
+    ],
+    "regression": [
+      {
+        "step": 1,
+        "title": "Assisted 90/90",
+        "video": "hip_assisted_9090.mp4",
+        "cues": [
+          "Use hands for support"
+        ]
+      }
+    ],
+    "trainerNotes": "Ensure client maintains breathing cadence and avoids pelvic tuck.",
+    "unlockable": true
+  },
+  {
+    "id": "K1",
+    "title": "Knee Stability Flow",
+    "region": "Knee",
+    "colorCode": "#64B5F6",
+    "goal": "Enhance knee alignment and motor control.",
+    "progression": [
+      {
+        "step": 1,
+        "title": "Wall Sit with Ball Squeeze",
+        "video": "knee_wall_sit.mp4",
+        "cues": [
+          "Knees in line with toes",
+          "Hold squeeze throughout"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Step Down Control",
+        "video": "knee_step_down.mp4",
+        "cues": [
+          "Control eccentric movement",
+          "Avoid knee valgus"
+        ]
+      }
+    ],
+    "regression": [
+      {
+        "step": 1,
+        "title": "Assisted Wall Sit",
+        "video": "knee_wall_sit_assist.mp4",
+        "cues": [
+          "Use support to assist posture"
+        ]
+      }
+    ],
+    "trainerNotes": "Focus on patellar tracking.",
+    "unlockable": true
+  },
+  {
+    "id": "L1",
+    "title": "Spinal Hygiene Reset",
+    "region": "Low Back",
+    "colorCode": "#81C784",
+    "goal": "Develop lumbo-pelvic rhythm and core stability.",
+    "progression": [
+      {
+        "step": 1,
+        "title": "Cat-Cow Flow",
+        "video": "back_cat_cow.mp4",
+        "cues": [
+          "Move with breath",
+          "Keep hips stable"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Bird Dog Hold",
+        "video": "back_bird_dog.mp4",
+        "cues": [
+          "Reach long",
+          "Keep spine neutral"
+        ]
+      }
+    ],
+    "regression": [
+      {
+        "step": 1,
+        "title": "Quadruped Rock Back",
+        "video": "back_rock_back.mp4",
+        "cues": [
+          "Use hips to guide motion"
+        ]
+      }
+    ],
+    "trainerNotes": "Maintain diaphragmatic breathing.",
+    "unlockable": true
+  },
+  {
+    "id": "S1",
+    "title": "Shoulder Control Drill",
+    "region": "Shoulder",
+    "colorCode": "#BA68C8",
+    "goal": "Improve scapular rhythm and postural awareness.",
+    "progression": [
+      {
+        "step": 1,
+        "title": "Wall Slides",
+        "video": "shoulder_wall_slides.mp4",
+        "cues": [
+          "Elbows on wall",
+          "Don't shrug"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Scapular Pushups",
+        "video": "shoulder_scap_pushup.mp4",
+        "cues": [
+          "Glide scapula",
+          "Keep arms straight"
+        ]
+      }
+    ],
+    "regression": [
+      {
+        "step": 1,
+        "title": "Tabletop Reachbacks",
+        "video": "shoulder_reachback.mp4",
+        "cues": [
+          "Focus on thoracic rotation"
+        ]
+      }
+    ],
+    "trainerNotes": "Monitor head position.",
+    "unlockable": true
+  }
+]
