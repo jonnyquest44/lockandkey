@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Accelerated FAI Protocol Infographic</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <style>
+
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+
+        /* New Palette Mappings */
+
+        .accent-gold { color: #ffebb0; }
+
+        .bg-accent-gold { background-color: #ffebb0; }
+
+        .accent-orange { color: #ffc233; } /* New Load Color */
+
+        .bg-accent-orange { background-color: #ffc233; } /* New Load Color */
+
+        .accent-teal { color: #3E9B95; } /* New Darker Teal */
+
+        .bg-accent-teal { background-color: #3E9B95; } /* New Darker Teal */
+
+        .accent-dark { color: #69624b; } /* New Text Accent */
+
+        .bg-accent-dark { background-color: #69624b; } /* New Text Accent */
+
+
+
+        .shadow-playful { box-shadow: 0 10px 15px -3px rgba(255, 194, 51, 0.2), 0 4px 6px -2px rgba(255, 194, 51, 0.1); } /* Orange/Yellow shadow */
+
+
+
+        .chart-container {
+
+            position: relative;
+
+            width: 100%;
+
+            max-width: 800px;
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+            height: 350px;
+
+            max-height: 450px;
+
+        }
+
+        @media (min-width: 768px) {
+
+            .chart-container { height: 400px; }
+
+        }
+
+    </style>
+
+</head>
+
+<body class="p-4 md:p-10">
+
+
+
+    <header class="text-center mb-12 py-12 bg-accent-gold rounded-2xl shadow-playful border-b-8 border-accent-dark">
+
+        <h1 class="text-5xl md:text-7xl font-extrabold accent-dark tracking-tight">ACCELERATED FAI PROTOCOL</h1>
+
+        <h2 class="text-xl md:text-3xl mt-3 text-gray-700 font-light">The Skeleton Key Method: 4 Weeks to Corrected Hip Mechanics</h2>
+
+    </header>
+
+
+
+        <section class="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-accent-gold border-4 border-accent-orange rounded-xl p-6 shadow-md md:col-span-1 flex flex-col justify-center">
+
+            <div class="flex items-center mb-3">
+
+                <span class="text-4xl accent-orange mr-3">&#9888;</span>
+
+                <h3 class="text-2xl font-bold accent-dark">PROTOCOL WARNING</h3>
+
+            </div>
+
+            <p class="text-gray-800 font-semibold">If any exercise causes a "pinch," regress immediately to the previous week's protocol and hold that phase for an additional 7 days. **Zero pain compromise is the rule.**</p>
+
+        </div>
+
+
+
+                <div class="bg-white rounded-xl p-6 shadow-playful md:col-span-2">
+
+            <h3 class="text-2xl font-bold accent-dark mb-4">The Diagnostic Keys (FAI)</h3>
+
+            <div class="grid grid-cols-3 gap-4 text-center">
+
+                <div class="p-3 bg-gray-100 rounded-lg border-b-2 border-accent-orange">
+
+                    <p class="font-bold text-lg accent-orange">THE LOCK (Problem)</p>
+
+                    <p class="text-sm text-gray-700">Femoroacetabular Impingement (Cam/Pincer).</p>
+
+                </div>
+
+                <div class="p-3 bg-gray-100 rounded-lg border-b-2 border-accent-teal">
+
+                    <p class="font-bold text-lg accent-teal">THE RUST (Symptom)</p>
+
+                    <p class="text-sm text-gray-700">Sharp pinching in the groin during Flexion + Abduction.</p>
+
+                </div>
+
+                <div class="p-3 bg-gray-100 rounded-lg border-b-2 border-accent-dark">
+
+                    <p class="font-bold text-lg accent-dark">THE MASTER KEY (Fix)</p>
+
+                    <p class="text-sm text-gray-700">Posterior Femoral Glide driven by the Glutes + Posterior Pelvic Tilt (PPT).</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+        <section class="mb-12">
+
+        <h3 class="text-3xl font-bold accent-dark mb-6 text-center">Temporal Trend: Training Volume Progression</h3>
+
+        <p class="text-gray-600 mb-8 max-w-4xl mx-auto text-center">The program shifts aggressively from decompression to functional strength. Notice the focus transition from 80% Mobility/De-load in Week 1 to 60% Functional Load in Week 4.</p>
+
+
+
+        <div class="bg-white rounded-xl p-6 shadow-playful">
+
+            <div class="chart-container">
+
+                <canvas id="progressionBarChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+        <section class="mb-12">
+
+        <h3 class="text-3xl font-bold accent-orange mb-6 text-center">The Turn: The Corrective Flow</h3>
+
+        <p class="text-gray-600 mb-8 max-w-4xl mx-auto text-center">This four-step sequence ensures space is created before the correct motor pattern is loaded, preventing Anterior Femoral Glide.</p>
+
+
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+                        <div class="p-5 rounded-xl bg-accent-teal/10 border-b-4 border-accent-teal shadow-md flex flex-col text-center">
+
+                <span class="text-5xl accent-teal mb-3">&#8618;</span>
+
+                <p class="font-bold text-xl text-gray-800">STEP 1: De-Compress</p>
+
+                <p class="text-sm text-gray-700 mt-2 font-mono">LATERAL DISTRACTION</p>
+
+                <p class="text-xs text-gray-500">Pulls the thigh *outward* to create max joint space and de-pinch the capsule. (This step replaces the need for immediate SMFR.)</p>
+
+            </div>
+
+                        <div class="p-5 rounded-xl bg-accent-orange/10 border-b-4 border-accent-orange shadow-md flex flex-col text-center">
+
+                <span class="text-5xl accent-orange mb-3">&#10515;</span>
+
+                <p class="font-bold text-xl text-gray-800">STEP 2: Anchor</p>
+
+                <p class="text-sm text-gray-700 mt-2 font-mono">90/90 HIP LIFT (PPT)</p>
+
+                <p class="text-xs text-gray-500">Establishes the Posterior Pelvic Tilt to "raise the roof" of the hip socket. </p>
+
+            </div>
+
+                        <div class="p-5 rounded-xl bg-accent-teal/10 border-b-4 border-accent-teal shadow-md flex flex-col text-center">
+
+                <span class="text-5xl accent-teal mb-3">&#8617;</span>
+
+                <p class="font-bold text-xl text-gray-800">STEP 3: Posterior Glide</p>
+
+                <p class="text-sm text-gray-700 mt-2 font-mono">WALL ABDUCTION (Heel Drive)</p>
+
+                <p class="text-xs text-gray-500">Neurologically forces the specific posterior glute fibers to pull the femur head *back*.</p>
+
+            </div>
+
+                        <div class="p-5 rounded-xl bg-accent-orange/10 border-b-4 border-accent-orange shadow-md flex flex-col text-center">
+
+                <span class="text-5xl accent-orange mb-3">&#128170;</span>
+
+                <p class="font-bold text-xl text-gray-800">STEP 4: Load Pattern</p>
+
+                <p class="text-sm text-gray-700 mt-2 font-mono">RDL / GOBLET SQUAT</p>
+
+                <p class="text-xs text-gray-500">Integrates the new PPT/Glute pattern under resistance for long-term stability.</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+        <section class="mb-12">
+
+        <h3 class="text-3xl font-bold accent-dark mb-6 text-center">The 4-Week Accelerated Chart</h3>
+
+        <p class="text-gray-600 mb-8 max-w-4xl mx-auto text-center">Frequency is high in the stabilization phases (Wk 1/2) and shifts to dedicated loading sessions (3x/Week) in the integration phases (Wk 3/4).</p>
+
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <div class="bg-white rounded-xl p-6 shadow-playful border-l-8 border-accent-teal">
+
+                <h4 class="text-3xl font-extrabold accent-teal mb-2">WEEK 1: De-Load & Anchor</h4>
+
+                <p class="text-lg font-semibold text-gray-700 mb-4">Goal: Stop Pain / Master PPT</p>
+
+                <div class="space-y-4">
+
+                    <p class="text-sm font-bold bg-accent-gold/50 p-2 rounded-md">Restriction: STRICTLY avoid Frog Pose, Deep Squats.</p>
+
+                    <ul class="list-disc ml-5 space-y-3 text-gray-700">
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=igUoMHwIL8A" target="_blank" class="text-blue-600 hover:underline">Lateral Banded Distraction</a>:</span> Band pulls thigh outward. (3x / day, 2 min holds.)</li>
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=4NqvBm6-Neg" target="_blank" class="text-blue-600 hover:underline">90/90 Hip Lift</a>:</span> Master Posterior Pelvic Tilt. (3 sets of 10 breaths.)</li>
+
+                    </ul>
+
+                    <p class="text-sm font-bold accent-dark">Frequency: Daily (Pain-Free Only)</p>
+
+                </div>
+
+            </div>
+
+
+
+                        <div class="bg-white rounded-xl p-6 shadow-playful border-l-8 border-accent-teal">
+
+                <h4 class="text-3xl font-extrabold accent-teal mb-2">WEEK 2: Re-Align & Activate</h4>
+
+                <p class="text-lg font-semibold text-gray-700 mb-4">Goal: Posterior Glide Recruitment</p>
+
+                <div class="space-y-4">
+
+                    <p class="text-sm font-bold bg-gray-100 p-2 rounded-md accent-dark">Mechanism: Glute Max + Posterior Glute Medius Dominance. Inhibit TFL.</p>
+
+                    <ul class="list-disc ml-5 space-y-3 text-gray-700">
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=aPbiOoNz2Ws" target="_blank" class="text-blue-600 hover:underline">Isometric Wall Abduction (Heel Drive)</a>:</span> Push heel into wall. (3 sets of 30s holds.) **(Crucial)**</li>
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=6eL6Ax1zMik" target="_blank" class="text-blue-600 hover:underline">Cook Hip Lift</a>:</span> Single-leg bridge holding opposite knee to chest. (Forces Glute Max activation.)</li>
+
+                        <li><span class="font-bold">Side-Lying Leg Lift:</span> Toe angled down to bias posterior fibers. (Max 3-inch lift.)</li>
+
+                        <li><span class="font-bold">Quadruped Adductor Rockback:</span> Gentle rock only to inner-thigh stretch, stopping before pinch.</li>
+
+                        <li><span class="font-bold">Dead Bugs:</span> Low-level core work, forcing Anti-Extension.</li>
+
+                    </ul>
+
+                    <p class="text-sm font-bold accent-dark">Frequency: 4x / Week</p>
+
+                </div>
+
+            </div>
+
+
+
+                        <div class="bg-white rounded-xl p-6 shadow-playful border-l-8 border-accent-orange">
+
+                <h4 class="text-3xl font-extrabold accent-orange mb-2">WEEK 3: Functional Patterning</h4>
+
+                <p class="text-lg font-semibold text-gray-700 mb-4">Goal: The Glute-Dominated Hinge (Low Load)</p>
+
+                <div class="space-y-4">
+
+                    <p class="text-sm font-bold bg-gray-100 p-2 rounded-md accent-dark">Mechanism: Transition stabilization into fundamental compound movements without impingement.</p>
+
+                    <ul class="list-disc ml-5 space-y-3 text-gray-700">
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=WGjf5w8iaTM" target="_blank" class="text-blue-600 hover:underline">Box Squats</a>:</span> Squat down to a high box. Focus on sitting back. Stop above pinch depth.</li>
+
+                        <li><span class="font-bold">RDL (Romanian Deadlift):</span> Light dumbbells. Focus on hips-back movement. Keep shins vertical.</li>
+
+                        <li><span class="font-bold">Copenhagen Plank (Regression):</span> Side plank with top knee on bench. Eccentric adductor control.</li>
+
+                        <li><span class="font-bold accent-teal">Daily Vitamin:</span> Perform Wall Abduction isometric hold before every session.</li>
+
+                    </ul>
+
+                    <p class="text-sm font-bold accent-dark">Frequency: 3x / Week</p>
+
+            </div>
+
+            </div>
+
+
+
+                        <div class="bg-white rounded-xl p-6 shadow-playful border-l-8 border-accent-orange">
+
+                <h4 class="text-3xl font-extrabold accent-orange mb-2">WEEK 4: Full Functional Load</h4>
+
+                <p class="text-lg font-semibold text-gray-700 mb-4">Goal: Solidify the new motor pattern under resistance.</p>
+
+                <div class="space-y-4">
+
+                    <p class="text-sm font-bold bg-gray-100 p-2 rounded-md accent-dark">Mechanism: Load Tolerance & Volume. Increase load/volume while maintaining perfect PPT control.</p>
+
+                    <ul class="list-disc ml-5 space-y-3 text-gray-700">
+
+                        <li><span class="font-bold"><a href="https://www.youtube.com/watch?v=mF5tnEBrdkc" target="_blank" class="text-blue-600 hover:underline">Goblet Squats (Full Depth Test)</a>:</span> Weight counterbalances torso. Test depth, stop if pinch occurs.</li>
+
+                        <li><span class="font-bold">Split Squats:</span> Focus on vertical front shin. Controlled descent.</li>
+
+                        <li><span class="font-bold">Standing Single-Leg RDLS:</span> Advanced unilateral control.</li>
+
+                        <li><span class="font-bold">Lifestyle Check:</span> Ensure sitting posture is high-hip and you are avoiding standing hip-hang.</li>
+
+                    </ul>
+
+                    <p class="text-sm font-bold accent-dark">Frequency: 3x / Week</p>
+
+            </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <footer class="text-center mt-12 py-8 bg-gray-200 rounded-lg">
+
+        <p class="text-xl font-bold accent-dark">Disclaimer: Consult a licensed professional before starting any new physical protocol.</p>
+
+    </footer>
+
+
+
+    <script>
+
+        function wrapLabels(labels) {
+
+            return labels.map(label => {
+
+                if (label.length <= 16) return label;
+
+                const words = label.split(' ');
+
+                const lines = [];
+
+                let currentLine = '';
+
+
+
+                words.forEach(word => {
+
+                    let newLine = (currentLine + ' ' + word).trim();
+
+                    if (word.length > 16) {
+
+                        if (currentLine) lines.push(currentLine);
+
+                        lines.push(word);
+
+                        currentLine = '';
+
+                    } else if (newLine.length <= 16) {
+
+                        currentLine = newLine;
+
+                    } else {
+
+                        if (currentLine) lines.push(currentLine);
+
+                        currentLine = word;
+
+                    }
+
+                });
+
+                if (currentLine) lines.push(currentLine);
+
+                return lines;
+
+            });
+
+        }
+
+
+
+        function getMandatoryTooltipConfig() {
+
+            return {
+
+                tooltip: {
+
+                    callbacks: {
+
+                        title: function(tooltipItems) {
+
+                            const item = tooltipItems[0];
+
+                            let label = item.chart.data.labels[item.dataIndex];
+
+                            if (Array.isArray(label)) {
+
+                              return label.join(' ');
+
+                            } else {
+
+                              return label;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            };
+
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+
+            const weeks = ['Wk 1 (De-Load)', 'Wk 2 (Activate)', 'Wk 3 (Low Load)', 'Wk 4 (Integrate)'];
+
+            const progressionData = {
+
+                labels: wrapLabels(weeks),
+
+                datasets: [
+
+                    {
+
+                        label: 'Mobility / De-Load',
+
+                        data: [80, 40, 10, 10], 
+
+                        backgroundColor: '#3E9B95', // New Dark Teal (Relaxed)
+
+                        stack: 'Stack 0',
+
+                    }, 
+
+                    {
+
+                        label: 'Activation / Core',
+
+                        data: [20, 60, 40, 30],
+
+                        backgroundColor: '#69624b', // Dark Olive (Mid-level focus)
+
+                        stack: 'Stack 0',
+
+                    }, 
+
+                    {
+
+                        label: 'Functional Strength Load',
+
+                        data: [0, 0, 50, 60],
+
+                        backgroundColor: '#ffc233', // New Orange/Yellow (High load)
+
+                        stack: 'Stack 0',
+
+                    }
+
+                ]
+
+            };
+
+
+
+            const mandatoryPlugins = getMandatoryTooltipConfig();
+
+            
+
+            const progressionBarConfig = {
+
+                type: 'bar',
+
+                data: progressionData,
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        x: {
+
+                            stacked: true,
+
+                            grid: { display: false }
+
+                        },
+
+                        y: {
+
+                            stacked: true,
+
+                            max: 100,
+
+                            title: { display: true, text: 'Relative Effort (%)', color: '#69624b' }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: { position: 'top', labels: { color: '#69624b' } },
+
+                        title: { display: false },
+
+                        ...mandatoryPlugins
+
+                    }
+
+                }
+
+            };
+
+            new Chart(document.getElementById('progressionBarChart'), progressionBarConfig);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
