@@ -1,0 +1,36 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node / Expo
+**/node_modules/
+**/.expo/
+**/.expo-shared/
+**/dist/
+**/web-build/
+**/*.log
+
+# Expo / Native build outputs
+**/android/
+**/ios/
+**/*.apk
+**/*.aab
+**/*.ipa
+
+# Environment
+**/.env
+**/.env.*.local
+
+# Large binaries/docs in this monorepo root (keep code only)
+*.pdf
+*.xlsx
+*.mp4
+
+# Folders in this workspace that should not be tracked
+Abacus/
+Gemini Studio/
+app mockups/
+deepagent/
+infographic/
+movement-wheel-mvp/
+web-mvp/src/components/
