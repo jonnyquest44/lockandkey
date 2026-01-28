@@ -34,3 +34,10 @@ deepagent/
 infographic/
 movement-wheel-mvp/
 web-mvp/src/components/
+
+# --- MVP Isolation ---
+corrective-deck/
+web-mvp/
+movement_wheel_*.md
+movement-wheel-mvp/
+

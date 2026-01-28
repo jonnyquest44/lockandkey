@@ -59,3 +59,8 @@ Thumbs.db
 # Environment
 .env
 
+# --- MVP Isolation ---
+corrective-deck/
+web-mvp/
+movement_wheel_*.md
+movement-wheel-mvp/
