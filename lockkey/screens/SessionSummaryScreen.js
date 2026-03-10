@@ -10,45 +10,41 @@ const label = (v) =>
 export default function SessionSummaryScreen({ navigation }) {
   const { draft, startNewSession, completeSession } = useSession();
 
-  const symptoms = Array.isArray(draft?.symptoms) ? draft.symptoms : [];
   const attempts = Array.isArray(draft?.attempts) ? draft.attempts : [];
+  const symptoms = Array.isArray(draft?.symptoms) ? draft.symptoms : [];
 
   const handleReturnHome = async () => {
     try {
       await completeSession();
       startNewSession();
-
       const tabs = navigation.getParent();
       if (tabs) tabs.navigate("Home");
-
       navigation.popToTop();
-    } catch (e) {
-      Alert.alert("Error", "Could not complete session. Please try again.");
+    } catch {
+      Alert.alert("Error", "Could not complete session.");
     }
   };
 
   return (
     <AppShell title="Session Report" scroll>
       <View>
-        <Text style={{ fontSize: 16, fontWeight: "700" }}>Summary</Text>
-
-        <Spacer size={12} />
-
-        <Text>Joint: {label(draft?.joint)}</Text>
+        <Text>Zone: {label(draft?.zone)}</Text>
         <Text>
           Triage: {label(draft?.triageType)} · {label(draft?.triageIntensity)}
         </Text>
         <Text>Symptoms: {symptoms.length ? symptoms.join(", ") : "—"}</Text>
+        <Text>Location: {label(draft?.location)}</Text>
+        <Text>Trigger: {label(draft?.trigger)}</Text>
         <Text>Strikes: {label(draft?.strikeCount)}</Text>
 
-        <Spacer size={12} />
+        <Spacer size={16} />
 
         <Text style={{ fontWeight: "700" }}>Attempts</Text>
-        <Spacer size={6} />
+        <Spacer size={8} />
         {attempts.length > 0 ? (
           attempts.map((a, idx) => (
             <Text key={`${a.ts}-${idx}`}>
-              • {label(a.step)} (T{label(a.tier)} A{label(a.attempt)}): {label(a.outcome)}
+              • {label(a.step)} T{label(a.tier)} A{label(a.attempt)}: {label(a.outcome)}
               {typeof a.painAfter === "number" ? ` · painAfter ${a.painAfter}` : ""}
             </Text>
           ))
@@ -56,13 +52,8 @@ export default function SessionSummaryScreen({ navigation }) {
           <Text>—</Text>
         )}
 
-        <Spacer size={18} />
-
-        <Button title="Return Home" onPress={handleReturnHome} />
-
-        <Spacer size={12} />
-
-        <Button title="Back" onPress={() => navigation.goBack()} />
+        <Spacer size={16} />
+        <Button title="Save + Return Home" onPress={handleReturnHome} />
       </View>
     </AppShell>
   );

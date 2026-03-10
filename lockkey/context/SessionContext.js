@@ -1,30 +1,24 @@
 import React, { createContext, useContext, useState } from "react";
 import { appendHistory } from "../utils/storage";
-import { FLOW } from "../utils/protocolEngine";
 
 const SessionContext = createContext(null);
 
 const initialDraft = {
-  joint: null,
+  zone: null,
 
-  // Triage
-  triageType: null, // "pain" | "discomfort"
-  triageIntensity: null, // 1..10
+  triageType: null,
+  triageIntensity: null,
   symptoms: [],
 
-  // Engine state
-  currentStep: FLOW.LOCATE,
+  location: null,
+  trigger: null,
+
+  currentStep: "KEYS",
   currentAttempt: 1,
   strikeCount: 0,
-  painAfter: null, // Tier 2 validation
+  painAfter: null,
 
-  // Session log
   attempts: [],
-
-  // Legacy/back-compat
-  tissueType: null,
-  movementDirection: null,
-  selectedSolutions: [],
 };
 
 export function SessionProvider({ children }) {
@@ -42,20 +36,14 @@ export function SessionProvider({ children }) {
     const record = {
       id: String(Date.now()),
       createdAt: new Date().toISOString(),
-
-      joint: draft.joint ?? null,
+      zone: draft.zone ?? null,
       triageType: draft.triageType ?? null,
       triageIntensity: draft.triageIntensity ?? null,
       symptoms: Array.isArray(draft.symptoms) ? draft.symptoms : [],
-
-      strikeCount: Number.isFinite(draft.strikeCount) ? draft.strikeCount : 0,
+      location: draft.location ?? null,
+      trigger: draft.trigger ?? null,
+      strikeCount: draft.strikeCount ?? 0,
       attempts: Array.isArray(draft.attempts) ? draft.attempts : [],
-
-      tissueType: draft.tissueType ?? null,
-      movementDirection: draft.movementDirection ?? null,
-      selectedSolutions: Array.isArray(draft.selectedSolutions)
-        ? draft.selectedSolutions
-        : [],
     };
 
     await appendHistory(record);

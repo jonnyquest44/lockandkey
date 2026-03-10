@@ -1,20 +1,19 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { View, Text, Pressable, Button } from "react-native";
 import AppShell from "../components/AppShell";
 import Spacer from "../components/Spacer";
 import { useSession } from "../context/SessionContext";
-
-// Single-screen flow steps (fast)
-const STEPS = {
-  LOCATE: "LOCATE",
-  TRIAGE: "TRIAGE",
-  LOCK1: "LOCK1",
-  LOCK2: "LOCK2",
-  LOCK3: "LOCK3",
-  DECIDE: "DECIDE",
-};
+import { FLOW, OUTCOME, nextAfterOutcome, isRedFlag } from "../utils/protocolEngine";
 
 const ZONES = ["Knee", "Hip", "Shoulder", "Ankle", "Spine", "Wrist", "Elbow"];
+
+const RED_FLAG_SYMPTOMS = [
+  "Sharp/Stabbing",
+  "Shooting",
+  "Numbness",
+  "Tingling",
+  "Unstable/Giving way",
+];
 
 function Pill({ label }) {
   return (
@@ -29,6 +28,28 @@ function Pill({ label }) {
     >
       <Text style={{ fontSize: 12, fontWeight: "700" }}>{label}</Text>
     </View>
+  );
+}
+
+function Chip({ label, selected, onPress }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: selected ? "#22C55E" : "#D1D5DB",
+        backgroundColor: selected ? "#22C55E" : "#FFFFFF",
+        marginRight: 10,
+        marginBottom: 10,
+      }}
+    >
+      <Text style={{ fontWeight: "800", color: selected ? "#FFFFFF" : "#111827" }}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -75,7 +96,7 @@ function Segmented({ left, right, value, onChange }) {
   );
 }
 
-function NumberRow({ min = 1, max = 10, value, onChange }) {
+function NumberRow({ min = 0, max = 10, value, onChange }) {
   const nums = useMemo(
     () => Array.from({ length: max - min + 1 }, (_, i) => i + min),
     [min, max]
@@ -110,72 +131,137 @@ function NumberRow({ min = 1, max = 10, value, onChange }) {
   );
 }
 
-function Chip({ label, selected, onPress }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        borderRadius: 999,
-        borderWidth: 1,
-        borderColor: selected ? "#22C55E" : "#D1D5DB",
-        backgroundColor: selected ? "#22C55E" : "#FFFFFF",
-      }}
-    >
-      <Text style={{ fontWeight: "800", color: selected ? "#FFFFFF" : "#111827" }}>
-        {label}
-      </Text>
-    </Pressable>
-  );
+// Placeholder tier content until real exercise library is wired in
+function getTierContent(zone, tier) {
+  return {
+    title: `${zone} — Tier ${tier}`,
+    summary:
+      tier === 1
+        ? "Tier 1: inhibit/relax tissue that may be overactive."
+        : tier === 2
+        ? "Tier 2: lengthen/mobilize and re-check symptoms."
+        : "Tier 3: activate/integrate into usable movement.",
+    exercises: [
+      `Exercise A (Tier ${tier})`,
+      `Exercise B (Tier ${tier})`,
+      `Exercise C (Tier ${tier})`,
+    ],
+  };
 }
 
-export default function ZoneFlowScreen({ navigation, route }) {
+export default function ZoneFlowScreen({ navigation }) {
   const { draft, updateDraft } = useSession();
 
-  const zone = route?.params?.zone ?? draft?.joint ?? "Knee";
-  const [step, setStep] = useState(draft?.joint ? STEPS.TRIAGE : STEPS.LOCATE);
+  const zone = draft?.joint ?? "Knee";
 
-  const triageAdvanceTimer = useRef(null);
-  const lockAdvanceTimer = useRef(null);
+  const [step, setStep] = useState(draft?.currentStep ?? FLOW.LOCATE);
+  const [attempt, setAttempt] = useState(draft?.currentAttempt ?? 1);
+  const [strikeCount, setStrikeCount] = useState(draft?.strikeCount ?? 0);
 
-  const triageType = draft?.triageType ?? null; // "pain" | "discomfort"
-  const triageIntensity = draft?.triageIntensity ?? null; // 1..10
+  useEffect(() => {
+    updateDraft({
+      currentStep: step,
+      currentAttempt: attempt,
+      strikeCount,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, attempt, strikeCount]);
 
-  // Placeholder protocol data for now
-  const lockTitle = (lock) => `${zone} — Key ${lock}`;
-  const lockSummary = (lock) => `Short description for ${zone} key ${lock}.`;
-  const lockExercises = (lock) => [
-    `Exercise A for Key ${lock}`,
-    `Exercise B for Key ${lock}`,
-    `Exercise C for Key ${lock}`,
-  ];
+  const symptoms = Array.isArray(draft?.symptoms) ? draft.symptoms : [];
+  const triageType = draft?.triageType ?? null;
+  const triageIntensity = draft?.triageIntensity ?? null;
+  const painAfter = typeof draft?.painAfter === "number" ? draft.painAfter : null;
 
-  const openProtocolDetail = (lockNumber) => {
+  const toggleSymptom = (s) => {
+    const has = symptoms.includes(s);
+    const next = has ? symptoms.filter((x) => x !== s) : [...symptoms, s];
+    updateDraft({ symptoms: next });
+  };
+
+  const tierNumber =
+    step === FLOW.TIER1 ? 1 : step === FLOW.TIER2 ? 2 : step === FLOW.TIER3 ? 3 : null;
+
+  const { title, summary, exercises } =
+    tierNumber != null
+      ? getTierContent(zone, tierNumber)
+      : { title: "", summary: "", exercises: [] };
+
+  const openProtocolDetail = () => {
+    if (!tierNumber) return;
     navigation.navigate("ProtocolDetail", {
       zone,
-      lockNumber,
-      title: lockTitle(lockNumber),
-      summary: lockSummary(lockNumber),
-      exercises: lockExercises(lockNumber),
+      lockNumber: tierNumber,
+      title,
+      summary,
+      exercises,
     });
   };
 
-  const goNext = () => {
-    if (step === STEPS.LOCATE) return setStep(STEPS.TRIAGE);
-    if (step === STEPS.TRIAGE) return setStep(STEPS.LOCK1);
-    if (step === STEPS.LOCK1) return setStep(STEPS.LOCK2);
-    if (step === STEPS.LOCK2) return setStep(STEPS.LOCK3);
-    if (step === STEPS.LOCK3) return setStep(STEPS.DECIDE);
+  const canContinueLocate = Boolean(draft?.joint);
+  const canContinueTriage =
+    Boolean(triageType) && typeof triageIntensity === "number";
+
+  const canSubmitTier2 = painAfter !== null;
+
+  const logAttempt = ({ outcome, painAfterValue }) => {
+    const entry = {
+      step,
+      tier: tierNumber,
+      attempt,
+      outcome,
+      painAfter: typeof painAfterValue === "number" ? painAfterValue : null,
+      ts: new Date().toISOString(),
+    };
+
+    updateDraft({
+      attempts: Array.isArray(draft?.attempts)
+        ? [...draft.attempts, entry]
+        : [entry],
+    });
   };
 
-  const goBack = () => {
-    if (step === STEPS.DECIDE) return setStep(STEPS.LOCK3);
-    if (step === STEPS.LOCK3) return setStep(STEPS.LOCK2);
-    if (step === STEPS.LOCK2) return setStep(STEPS.LOCK1);
-    if (step === STEPS.LOCK1) return setStep(STEPS.TRIAGE);
-    if (step === STEPS.TRIAGE) return setStep(STEPS.LOCATE);
-    navigation.goBack();
+  const goToRefer = () => {
+    setStep(FLOW.REFER);
+    setAttempt(1);
+  };
+
+  const handleContinueFromTriage = () => {
+    if (isRedFlag(symptoms) || (typeof triageIntensity === "number" && triageIntensity >= 4)) {
+      goToRefer();
+      return;
+    }
+
+    setStep(FLOW.TIER1);
+    setAttempt(1);
+  };
+
+  const handleOutcome = (outcome) => {
+    if (step === FLOW.TIER2 && !canSubmitTier2) {
+      return;
+    }
+
+    const painAfterValue = step === FLOW.TIER2 ? painAfter : null;
+
+    logAttempt({
+      outcome,
+      painAfterValue,
+    });
+
+    const result = nextAfterOutcome({
+      currentStep: step,
+      currentAttempt: attempt,
+      strikeCount,
+      outcome,
+      painAfter: painAfterValue,
+    });
+
+    setStrikeCount(result.nextStrikeCount);
+    setStep(result.nextStep);
+    setAttempt(result.nextAttempt);
+
+    if (step === FLOW.TIER2) {
+      updateDraft({ painAfter: null });
+    }
   };
 
   const resetSession = () => {
@@ -183,98 +269,59 @@ export default function ZoneFlowScreen({ navigation, route }) {
       joint: null,
       triageType: null,
       triageIntensity: null,
-      lock1Outcome: null,
-      lock2Outcome: null,
-      lock3Outcome: null,
-      selectedSolutions: [],
+      symptoms: [],
+      currentStep: FLOW.LOCATE,
+      currentAttempt: 1,
+      strikeCount: 0,
+      painAfter: null,
+      attempts: [],
     });
-    setStep(STEPS.LOCATE);
+    setStep(FLOW.LOCATE);
+    setAttempt(1);
+    setStrikeCount(0);
   };
 
-  const setTriageType = (v) => {
-    updateDraft({ triageType: v });
-    if (triageIntensity) {
-      if (triageAdvanceTimer.current) clearTimeout(triageAdvanceTimer.current);
-      triageAdvanceTimer.current = setTimeout(() => {
-        updateDraft({ joint: zone });
-        setStep(STEPS.LOCK1);
-      }, 200);
-    }
-  };
-
-  const setTriageIntensity = (n) => {
-    updateDraft({ triageIntensity: n });
-    if (triageType) {
-      if (triageAdvanceTimer.current) clearTimeout(triageAdvanceTimer.current);
-      triageAdvanceTimer.current = setTimeout(() => {
-        updateDraft({ joint: zone });
-        setStep(STEPS.LOCK1);
-      }, 200);
-    }
-  };
-
-  const addSelectedSolution = (lockNumber) => {
-    const id = `${zone}-Key${lockNumber}`;
-    const prev = Array.isArray(draft?.selectedSolutions) ? draft.selectedSolutions : [];
-    if (prev.includes(id)) return prev;
-    const next = [...prev, id];
-    updateDraft({ selectedSolutions: next });
-    return next;
-  };
-
-  // A) Branching logic:
-  // - Better => jump to DECIDE
-  // - Same/Worse => continue to next lock
-  const setOutcomeAndBranch = (lockNumber, outcomeKey, outcome) => {
-    updateDraft({ [outcomeKey]: outcome });
-    addSelectedSolution(lockNumber);
-
-    if (lockAdvanceTimer.current) clearTimeout(lockAdvanceTimer.current);
-    lockAdvanceTimer.current = setTimeout(() => {
-      if (outcome === "better") {
-        setStep(STEPS.DECIDE);
-      } else {
-        // move forward to next lock (or DECIDE after LOCK3)
-        if (lockNumber === 1) setStep(STEPS.LOCK2);
-        else if (lockNumber === 2) setStep(STEPS.LOCK3);
-        else setStep(STEPS.DECIDE);
-      }
-    }, 220);
-  };
-
-  const complete = () => {
-    updateDraft({ joint: zone });
+  const finishToSummary = () => {
     navigation.navigate("SessionSummary");
   };
 
-  const Footer = (
-    <View>
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <View style={{ flex: 1 }}>
-          <Button title="Back" onPress={goBack} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Button title="Reset" onPress={resetSession} />
-        </View>
-      </View>
-    </View>
-  );
+  const back = () => {
+    if (step === FLOW.TIER1) {
+      setStep(FLOW.TRIAGE);
+      return;
+    }
+    if (step === FLOW.TIER2) {
+      setStep(FLOW.TIER1);
+      updateDraft({ painAfter: null });
+      return;
+    }
+    if (step === FLOW.TIER3) {
+      setStep(FLOW.TIER2);
+      return;
+    }
+    if (step === FLOW.TRIAGE) {
+      setStep(FLOW.LOCATE);
+      return;
+    }
+    navigation.goBack();
+  };
 
   return (
-    <AppShell title="Session" scroll footer={Footer}>
+    <AppShell title="Session" scroll>
       <View>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 20, fontWeight: "800" }}>{zone} Zone</Text>
-          <Pill label={step} />
+        <View
+          style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: 22, fontWeight: "800" }}>{zone} Zone</Text>
+          <Pill label={`${step}${tierNumber ? ` • A${attempt}` : ""} • S${strikeCount}`} />
         </View>
 
         <Spacer size={10} />
 
-        {/* LOCATE */}
-        {step === STEPS.LOCATE && (
+        {step === FLOW.LOCATE && (
           <View
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#FFF",
               borderRadius: 16,
               padding: 16,
               borderWidth: 1,
@@ -283,30 +330,40 @@ export default function ZoneFlowScreen({ navigation, route }) {
           >
             <Text style={{ fontSize: 18, fontWeight: "900" }}>Locate</Text>
             <Spacer size={8} />
-            <Text style={{ opacity: 0.75 }}>Tap a zone to begin.</Text>
+            <Text style={{ opacity: 0.75 }}>Pick the zone you’re working on.</Text>
 
             <Spacer size={14} />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
               {ZONES.map((z) => (
                 <Chip
                   key={z}
                   label={z}
-                  selected={z === zone}
-                  onPress={() => {
-                    updateDraft({ joint: z });
-                    setTimeout(() => setStep(STEPS.TRIAGE), 120);
-                  }}
+                  selected={draft?.joint === z}
+                  onPress={() => updateDraft({ joint: z })}
                 />
               ))}
             </View>
+
+            <Spacer size={16} />
+            <Pressable
+              disabled={!canContinueLocate}
+              onPress={() => setStep(FLOW.TRIAGE)}
+              style={{
+                paddingVertical: 16,
+                borderRadius: 999,
+                alignItems: "center",
+                backgroundColor: canContinueLocate ? "#22C55E" : "#A7F3D0",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "900", color: "#FFF" }}>Continue</Text>
+            </Pressable>
           </View>
         )}
 
-        {/* TRIAGE */}
-        {step === STEPS.TRIAGE && (
+        {step === FLOW.TRIAGE && (
           <View
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#FFF",
               borderRadius: 16,
               padding: 16,
               borderWidth: 1,
@@ -316,144 +373,216 @@ export default function ZoneFlowScreen({ navigation, route }) {
             <Text style={{ fontSize: 18, fontWeight: "900" }}>Triage</Text>
             <Spacer size={8} />
             <Text style={{ opacity: 0.75 }}>
-              Pain = sharp/unsafe. Discomfort = tight/stiff/sore.
+              Any symptom chip selected, or pain intensity ≥ 4, triggers referral.
             </Text>
 
             <Spacer size={14} />
-            <Text style={{ fontWeight: "900" }}>1) How does it feel?</Text>
+            <Text style={{ fontWeight: "900" }}>Red-flag symptoms</Text>
+            <Spacer size={10} />
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              {RED_FLAG_SYMPTOMS.map((s) => (
+                <Chip
+                  key={s}
+                  label={s}
+                  selected={symptoms.includes(s)}
+                  onPress={() => toggleSymptom(s)}
+                />
+              ))}
+            </View>
+
+            <Spacer size={12} />
+            <Text style={{ fontWeight: "900" }}>How does it feel?</Text>
             <Spacer size={10} />
             <Segmented
               left={{ label: "Pain", value: "pain" }}
               right={{ label: "Discomfort", value: "discomfort" }}
               value={triageType}
-              onChange={setTriageType}
+              onChange={(v) => updateDraft({ triageType: v })}
             />
 
             <Spacer size={16} />
-            <Text style={{ fontWeight: "900" }}>2) Intensity (1–10)</Text>
+            <Text style={{ fontWeight: "900" }}>Intensity (1–10)</Text>
             <Spacer size={10} />
-            <NumberRow value={triageIntensity} onChange={setTriageIntensity} />
+            <NumberRow
+              min={1}
+              max={10}
+              value={triageIntensity}
+              onChange={(n) => updateDraft({ triageIntensity: n })}
+            />
+
+            <Spacer size={16} />
+            <Pressable
+              disabled={!canContinueTriage}
+              onPress={handleContinueFromTriage}
+              style={{
+                paddingVertical: 16,
+                borderRadius: 999,
+                alignItems: "center",
+                backgroundColor: canContinueTriage ? "#22C55E" : "#A7F3D0",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "900", color: "#FFF" }}>Continue</Text>
+            </Pressable>
 
             <Spacer size={10} />
             <Text style={{ fontSize: 12, opacity: 0.6 }}>
-              Not medical advice. Refer out if severe/worsening/unsafe.
+              Not medical advice. Refer out if severe, worsening, or unsafe.
             </Text>
           </View>
         )}
 
-        {/* LOCK 1/2/3 */}
-        {([STEPS.LOCK1, STEPS.LOCK2, STEPS.LOCK3].includes(step)) && (
+        {[FLOW.TIER1, FLOW.TIER2, FLOW.TIER3].includes(step) && (
           <View
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#FFF",
               borderRadius: 16,
               padding: 16,
               borderWidth: 1,
               borderColor: "#E5E7EB",
             }}
           >
-            {(() => {
-              const lockNumber = step === STEPS.LOCK1 ? 1 : step === STEPS.LOCK2 ? 2 : 3;
-              const outcomeKey =
-                lockNumber === 1 ? "lock1Outcome" : lockNumber === 2 ? "lock2Outcome" : "lock3Outcome";
-              const selected = draft?.[outcomeKey] ?? null;
+            <Text style={{ fontSize: 18, fontWeight: "900" }}>
+              {title} (Attempt {attempt}/2)
+            </Text>
+            <Spacer size={8} />
+            <Text style={{ opacity: 0.75 }}>{summary}</Text>
 
-              return (
-                <>
-                  <Text style={{ fontSize: 18, fontWeight: "900" }}>{lockTitle(lockNumber)}</Text>
-                  <Spacer size={8} />
-                  <Text style={{ opacity: 0.75 }}>{lockSummary(lockNumber)}</Text>
+            <Spacer size={12} />
+            <Text style={{ fontWeight: "900" }}>Run:</Text>
+            <Spacer size={8} />
+            {exercises.map((ex) => (
+              <Text key={ex} style={{ marginBottom: 6 }}>
+                • {ex}
+              </Text>
+            ))}
 
-                  <Spacer size={12} />
-                  <Text style={{ fontWeight: "900" }}>Run:</Text>
-                  <Spacer size={8} />
-                  {lockExercises(lockNumber).map((ex) => (
-                    <Text key={ex} style={{ marginBottom: 6 }}>
-                      • {ex}
-                    </Text>
-                  ))}
+            <Spacer size={10} />
+            <Button title="Expand protocol (optional)" onPress={openProtocolDetail} />
 
-                  <Spacer size={10} />
-                  <Button title="Expand protocol (optional)" onPress={() => openProtocolDetail(lockNumber)} />
+            {step === FLOW.TIER2 && (
+              <>
+                <Spacer size={16} />
+                <Text style={{ fontWeight: "900" }}>Pain after Tier 2 (0–10)</Text>
+                <Spacer size={10} />
+                <NumberRow
+                  min={0}
+                  max={10}
+                  value={painAfter}
+                  onChange={(n) => updateDraft({ painAfter: n })}
+                />
+                <Spacer size={8} />
+                <Text style={{ fontSize: 12, opacity: 0.65 }}>
+                  Tier 2 success requires pain after ≤ 2.
+                </Text>
+              </>
+            )}
 
-                  <Spacer size={16} />
-                  <Text style={{ fontWeight: "900" }}>
-                    Outcome (Better jumps to Finish):
-                  </Text>
-                  <Spacer size={10} />
+            <Spacer size={16} />
+            <Text style={{ fontWeight: "900" }}>Outcome:</Text>
+            <Spacer size={10} />
 
-                  <View style={{ flexDirection: "row", gap: 10 }}>
-                    <Pressable
-                      onPress={() => setOutcomeAndBranch(lockNumber, outcomeKey, "better")}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 14,
-                        borderRadius: 999,
-                        alignItems: "center",
-                        backgroundColor: selected === "better" ? "#22C55E" : "#E5E7EB",
-                      }}
-                    >
-                      <Text style={{ fontWeight: "900", color: selected === "better" ? "#FFFFFF" : "#111827" }}>
-                        Better
-                      </Text>
-                    </Pressable>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Pressable
+                disabled={step === FLOW.TIER2 && !canSubmitTier2}
+                onPress={() => handleOutcome(OUTCOME.BETTER)}
+                style={{
+                  flex: 1,
+                  paddingVertical: 14,
+                  borderRadius: 999,
+                  alignItems: "center",
+                  backgroundColor:
+                    step === FLOW.TIER2 && !canSubmitTier2 ? "#A7F3D0" : "#22C55E",
+                }}
+              >
+                <Text style={{ fontWeight: "900", color: "#FFF" }}>Better</Text>
+              </Pressable>
 
-                    <Pressable
-                      onPress={() => setOutcomeAndBranch(lockNumber, outcomeKey, "same")}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 14,
-                        borderRadius: 999,
-                        alignItems: "center",
-                        backgroundColor: selected === "same" ? "#9CA3AF" : "#E5E7EB",
-                      }}
-                    >
-                      <Text style={{ fontWeight: "900", color: selected === "same" ? "#FFFFFF" : "#111827" }}>
-                        Same
-                      </Text>
-                    </Pressable>
+              <Pressable
+                disabled={step === FLOW.TIER2 && !canSubmitTier2}
+                onPress={() => handleOutcome(OUTCOME.SAME)}
+                style={{
+                  flex: 1,
+                  paddingVertical: 14,
+                  borderRadius: 999,
+                  alignItems: "center",
+                  backgroundColor:
+                    step === FLOW.TIER2 && !canSubmitTier2 ? "#D1D5DB" : "#9CA3AF",
+                }}
+              >
+                <Text style={{ fontWeight: "900", color: "#FFF" }}>Same</Text>
+              </Pressable>
 
-                    <Pressable
-                      onPress={() => setOutcomeAndBranch(lockNumber, outcomeKey, "worse")}
-                      style={{
-                        flex: 1,
-                        paddingVertical: 14,
-                        borderRadius: 999,
-                        alignItems: "center",
-                        backgroundColor: selected === "worse" ? "#EF4444" : "#E5E7EB",
-                      }}
-                    >
-                      <Text style={{ fontWeight: "900", color: selected === "worse" ? "#FFFFFF" : "#111827" }}>
-                        Worse
-                      </Text>
-                    </Pressable>
-                  </View>
-                </>
-              );
-            })()}
+              <Pressable
+                disabled={step === FLOW.TIER2 && !canSubmitTier2}
+                onPress={() => handleOutcome(OUTCOME.WORSE)}
+                style={{
+                  flex: 1,
+                  paddingVertical: 14,
+                  borderRadius: 999,
+                  alignItems: "center",
+                  backgroundColor:
+                    step === FLOW.TIER2 && !canSubmitTier2 ? "#FECACA" : "#EF4444",
+                }}
+              >
+                <Text style={{ fontWeight: "900", color: "#FFF" }}>Worse</Text>
+              </Pressable>
+            </View>
           </View>
         )}
 
-        {/* DECIDE */}
-        {step === STEPS.DECIDE && (
+        {step === FLOW.REFER && (
           <View
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#FFF",
               borderRadius: 16,
               padding: 16,
               borderWidth: 1,
               borderColor: "#E5E7EB",
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "900" }}>Finish</Text>
-            <Spacer size={8} />
+            <Text style={{ fontSize: 18, fontWeight: "900" }}>Referral Recommended</Text>
+            <Spacer size={10} />
             <Text style={{ opacity: 0.75 }}>
-              Save report to History and return to Home.
+              Based on red flags, intensity threshold, or failure to improve through the protocol,
+              stop here and refer out.
             </Text>
 
             <Spacer size={16} />
             <Pressable
-              onPress={complete}
+              onPress={finishToSummary}
+              style={{
+                paddingVertical: 16,
+                borderRadius: 999,
+                alignItems: "center",
+                backgroundColor: "#111827",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "900", color: "#FFF" }}>
+                Finish & Save Report
+              </Text>
+            </Pressable>
+          </View>
+        )}
+
+        {step === FLOW.FINISH && (
+          <View
+            style={{
+              backgroundColor: "#FFF",
+              borderRadius: 16,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: "#E5E7EB",
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "900" }}>Complete</Text>
+            <Spacer size={10} />
+            <Text style={{ opacity: 0.75 }}>
+              Session complete. Save the report to History.
+            </Text>
+
+            <Spacer size={16} />
+            <Pressable
+              onPress={finishToSummary}
               style={{
                 paddingVertical: 16,
                 borderRadius: 999,
@@ -461,12 +590,17 @@ export default function ZoneFlowScreen({ navigation, route }) {
                 backgroundColor: "#22C55E",
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: "900", color: "#FFFFFF" }}>
-                Finish Session
+              <Text style={{ fontSize: 16, fontWeight: "900", color: "#FFF" }}>
+                Go to Report
               </Text>
             </Pressable>
           </View>
         )}
+
+        <Spacer size={16} />
+        <Button title="Back" onPress={back} />
+        <Spacer size={10} />
+        <Button title="Reset Session" onPress={resetSession} />
       </View>
     </AppShell>
   );
