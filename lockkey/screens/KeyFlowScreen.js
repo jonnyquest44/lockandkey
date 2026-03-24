@@ -134,8 +134,10 @@ export default function KeyFlowScreen({ navigation }) {
   const zone = draft?.zone ?? "—";
   const tierNumber =
     step === FLOW.TIER1 ? 1 : step === FLOW.TIER2 ? 2 : step === FLOW.TIER3 ? 3 : null;
-  const protocol = tierNumber ? getTierContent(zone, tierNumber) : null;
-
+const protocol =
+  tierNumber
+    ? getTierContent(zone, tierNumber, draft?.location, draft?.trigger)
+    : null;
   const toggleSymptom = (s) => {
     const next = symptoms.includes(s)
       ? symptoms.filter((x) => x !== s)
@@ -278,10 +280,14 @@ export default function KeyFlowScreen({ navigation }) {
         {[FLOW.TIER1, FLOW.TIER2, FLOW.TIER3].includes(step) && (
           <>
             <Text style={{ fontSize: 18, fontWeight: "700" }}>
-              {protocol?.title} · Attempt {attempt}/2
-            </Text>
-            <Spacer size={8} />
-            <Text>{protocol?.summary}</Text>
+  {protocol?.title} · Attempt {attempt}/2
+</Text>
+<Spacer size={8} />
+<Text style={{ opacity: 0.75 }}>
+  Zone: {label(zone)} · Location: {label(draft?.location)} · Trigger: {label(draft?.trigger)}
+</Text>
+<Spacer size={8} />
+<Text>{protocol?.summary}</Text>
 
             <Spacer size={12} />
             {(protocol?.exercises ?? []).map((ex) => (

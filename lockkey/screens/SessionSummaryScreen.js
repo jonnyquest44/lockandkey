@@ -33,8 +33,9 @@ export default function SessionSummaryScreen({ navigation }) {
           Triage: {label(draft?.triageType)} · {label(draft?.triageIntensity)}
         </Text>
         <Text>Symptoms: {symptoms.length ? symptoms.join(", ") : "—"}</Text>
-        <Text>Location: {label(draft?.location)}</Text>
-        <Text>Trigger: {label(draft?.trigger)}</Text>
+        <Text>
+  Pattern: {label(draft?.zone)} · {label(draft?.location)} · {label(draft?.trigger)}
+</Text>
         <Text>Strikes: {label(draft?.strikeCount)}</Text>
 
         <Spacer size={16} />
